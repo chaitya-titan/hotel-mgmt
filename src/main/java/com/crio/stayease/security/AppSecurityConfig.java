@@ -29,6 +29,8 @@ public class AppSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/admin/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/hotels").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/hotels/*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, AnonymousAuthenticationFilter.class)

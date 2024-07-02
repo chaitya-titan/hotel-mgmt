@@ -1,5 +1,6 @@
 package com.crio.stayease.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
