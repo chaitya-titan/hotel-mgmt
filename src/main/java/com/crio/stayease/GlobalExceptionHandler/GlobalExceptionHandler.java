@@ -35,5 +35,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleRoomNotFoundException(RoomsUnavailableException e) {
         return ResponseEntity.status(404).body(e.getMessage());
     }
+    @ExceptionHandler(value = BookingNotFoundException.class)
+    public ResponseEntity<String> handleBookingNotFoundException(BookingNotFoundException e) {
+        return ResponseEntity.status(404).body(e.getMessage());
+    }
 }
 

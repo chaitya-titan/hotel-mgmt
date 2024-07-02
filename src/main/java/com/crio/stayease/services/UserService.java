@@ -41,7 +41,7 @@ public class UserService {
     public UserResponseDTO registerUser(RegisterUserDTO registerUserDTO){
         String email = registerUserDTO.getEmail();
         Optional<User> user = userRepository.findByEmail(email);
-        if(registerUserDTO.getRole().equals(UserRole.ADMIN)){
+        if(registerUserDTO.getRole() != null && registerUserDTO.getRole().equals(UserRole.ADMIN)){
             throw new DifferentApiForRegistrationException("Admin registration not allowed");
         }
         if(user.isPresent()){

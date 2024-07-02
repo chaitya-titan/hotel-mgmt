@@ -1,6 +1,7 @@
 package com.crio.stayease.services;
 
 import com.crio.stayease.dtos.BookingResponseDTO;
+import com.crio.stayease.exceptions.BookingNotFoundException;
 import com.crio.stayease.exceptions.HotelNotFoundException;
 import com.crio.stayease.exceptions.RoomsUnavailableException;
 import com.crio.stayease.exceptions.UnAuthorisedException;
@@ -15,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Book;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,6 +71,41 @@ public class BookingService {
         booking.setHotel(hotel.get());
         Booking savedBooking = bookingRepository.save(booking);
         return modelMapper.map(savedBooking, BookingResponseDTO.class);
+    }
+
+    public List<BookingResponseDTO> getAllBookings(){
+        List<Booking> bookings = bookingRepository.findAll();
+        List<BookingResponseDTO> bookingResponseDTOs = new ArrayList<>();
+        for (Booking booking : bookings) {
+            bookingResponseDTOs.add(modelMapper.map(booking, BookingResponseDTO.class));
+        }
+        return bookingResponseDTOs;
+    }
+
+    public void deleteBooking(Long id){
+        Optional<Booking> booking = bookingRepository.findById(id);
+        if(booking.isEmpty()){
+            throw new BookingNotFoundException("Booking not found");
+        }
+        String token = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
+        Long userId = jwtService.getUserIDFromJWT(token);
+        User user = userRepository.findById(userId).get();
+        if(!user.getRole().equals(UserRole.HOTEL_MANAGER)){
+            throw new UnAuthorisedException("Only Hotel Managers can delete bookings");
+        }
+        bookingRepository.deleteById(id);
+    }
+
+    public BookingResponseDTO checkOut(Long bookingId){
+        Optional<Booking> booking = bookingRepository.findById(bookingId);
+        if(booking.isEmpty()){
+            throw new BookingNotFoundException("Booking not found");
+        }
+        booking.get().setCheckOutDate(LocalDate.now());
+        Room room = roomRepository.findById(booking.get().getRoom().getId()).get();
+        room.setRoomStatus(RoomStatus.AVAILABLE);
+        bookingRepository.save(booking.get());
+        return modelMapper.map(booking.get(), BookingResponseDTO.class);
     }
 
 }

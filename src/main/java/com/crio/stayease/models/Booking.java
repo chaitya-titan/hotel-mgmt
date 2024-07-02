@@ -1,9 +1,6 @@
 package com.crio.stayease.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,11 +11,14 @@ import java.time.LocalDate;
 @Table(name = "bookings")
 @EqualsAndHashCode(callSuper = true)
 public class Booking extends BaseModel {
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel;
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "room_id", nullable = false)
     private Room room;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
