@@ -9,8 +9,7 @@ import java.util.Date;
 
 @Service
 public class JWTService {
-    Dotenv dotenv = Dotenv.configure().load();
-    String alogSecret = dotenv.get("1b31239gebd982123???{}(@^$#)");
+    String alogSecret = "1b31239gebd982123???{}(@^$#)";
 
     private final Algorithm algorithm = Algorithm.HMAC256(alogSecret);
 
